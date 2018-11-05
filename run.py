@@ -7,14 +7,15 @@ from controllers.validators import RatingValidator, URLValidator
 from models.hotels import Hotels
 
 files = [STORAGE_PATH + file_name for file_name in os.listdir(STORAGE_PATH) if file_name.endswith('.csv')]
-reader = CSVHandler(files[0], Hotels)
+for file_path in files:
+    handler = CSVHandler(file_path, Hotels)
 
-reader.register_validator(RatingValidator)
-reader.register_validator(URLValidator)
+    handler.register_validator(RatingValidator)
+    handler.register_validator(URLValidator)
 
-reader.read()
+    handler.read()
 
-reader.register_formatter(JSONFormatter)
-reader.register_formatter(XMLFormatter)
-reader.sort('name')
-reader.write()
+    handler.register_formatter(JSONFormatter)
+    # handler.register_formatter(XMLFormatter)
+    handler.sort('name')
+    handler.write()

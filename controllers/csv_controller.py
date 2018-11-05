@@ -1,6 +1,6 @@
 import csv
 import logging
-from errors import ValidationError
+from errors import ValidationError, CSVHandlerError
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class CSVHandler:
                 reader = csv.reader(csvfile, delimiter=self.delimiter)
                 file_fields = next(reader)
                 if not (set(self.entity.fields) == set(file_fields) and len(self.entity.fields) == len(file_fields)):
-                    raise Exception('File fields and entity fields are not same')
+                    raise CSVHandlerError('File fields and entity fields are not same')
 
                 self._mapping = {k: file_fields.index(k) for k in self.entity.fields}
             except UnicodeDecodeError as e:
@@ -49,7 +49,7 @@ class CSVHandler:
         :rtype: None
         """
         if set(validator.fields) - set(self.entity.fields):
-            raise Exception('Entity does not have the required fields')
+            raise CSVHandlerError('Entity does not have the required fields')
         self.validator_list.append(validator)
 
     def read(self):
@@ -64,7 +64,7 @@ class CSVHandler:
             for n, row in enumerate(reader):
                 if n > 0:
                     if len(row) != len(self.entity.fields):
-                        raise Exception('Wrong fields count')
+                        raise CSVHandlerError('Wrong fields count')
 
                     row_dict = {k: row[self._mapping[k]] for k in self._mapping}
                     valid = True
@@ -104,7 +104,7 @@ class CSVHandler:
         :rtype: str
         """
         if self.formatter is None:
-            raise Exception('The formatter must be specified')
+            raise CSVHandlerError('The formatter must be specified')
 
         destination_path = self.file_path[:-4] + self.formatter.ext
         with open(destination_path, 'w+') as f:
@@ -127,6 +127,6 @@ class CSVHandler:
         :rtype: list
         """
         if field_name not in self.entity.fields:
-            raise Exception('Property "field_name" must be in list of entity fields')
+            raise CSVHandlerError('Property "field_name" must be in list of entity fields')
         self.result = sorted(self.result, key=lambda k: getattr(k, field_name))
         return self.result
