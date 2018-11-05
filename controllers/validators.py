@@ -1,5 +1,7 @@
-from urllib.parse import urlparse
+import logging
+import re
 
+logger = logging.getLogger(__name__)
 
 class BaseValidator:
     """
@@ -36,6 +38,7 @@ class RatingValidator(BaseValidator):
             return False
 
         if rating > 5 or rating < 0:
+            logger.error(row['stars'])
             return False
 
         return True
@@ -43,15 +46,23 @@ class RatingValidator(BaseValidator):
 
 class URLValidator(BaseValidator):
     """
-    Validate uri with urllib.parse
+    Validate uri with regex from Django project
     """
     fields = ['uri']
     name = 'URL validator'
 
     @classmethod
     def check(cls, row):
-        parse = urlparse(row['uri'])
-        if parse.netloc == '':
-            return False
-        else:
+        regex = re.compile(
+            r'(^(?:http|ftp)s?://)?' 
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'localhost|'
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'
+            r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'
+            r'(?::\d+)?'
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+        if regex.match(row['uri']):
             return True
+        else:
+            return False

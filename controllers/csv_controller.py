@@ -1,5 +1,6 @@
 import csv
 import logging
+from errors import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,7 @@ class CSVHandler:
                         raise Exception('Wrong fields count')
 
                     row_dict = {k: row[self._mapping[k]] for k in self._mapping}
+                    valid = True
                     for validator in self.validator_list:
                         valid = validator.check(row_dict)
 
@@ -75,12 +77,14 @@ class CSVHandler:
                                             'Validator is {validator_name}'.format(row_num=n + 1, row=str(row),
                                                                                    validator_name=validator.name)
                             logger.warning(error_message)
+
                             if not self.ignore_validation_errors:
-                                raise Exception(error_message)
+                                raise ValidationError(error_message, validator)
 
-                        else:
-                            self.result.append(self.entity(**row_dict))
+                            break
 
+                    if valid:
+                        self.result.append(self.entity(**row_dict))
         return self.result
 
     def register_formatter(self, formatter):
