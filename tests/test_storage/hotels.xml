@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<hotels>
+	<hotel>
+		<name>Apartment Dörr</name>
+		<address>Bolzmannweg 451, 05116 Hannover</address>
+		<stars>1</stars>
+		<contact>Scarlet Kusch-Linke</contact>
+		<phone>08177354570</phone>
+		<uri>http://www.garden.com/list/home.html</uri>
+	</hotel>
+	<hotel>
+		<name>Martini Cattaneo</name>
+		<address>Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)</address>
+		<stars>5</stars>
+		<contact>Rosalino Marchetti</contact>
+		<phone>+39 627 68225719</phone>
+		<uri>http://www.farina.org/blog/categories/tags/about.html</uri>
+	</hotel>
+	<hotel>
+		<name>The Gibson</name>
+		<address>63847 Lowe Knoll, East Maxine, WA 97030-4876</address>
+		<stars>5</stars>
+		<contact>Dr. Sinda Wyman</contact>
+		<phone>1-270-665-9933x1626</phone>
+		<uri>http://www.paucek.com/search.htm</uri>
+	</hotel>
+</hotels>
