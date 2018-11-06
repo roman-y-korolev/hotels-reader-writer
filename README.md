@@ -23,9 +23,9 @@ python run.py
 
 # How it works
 
-I made a handler class and separate classes for entities, validators and data formatters for writing to a file. 
+I made a handler class and separate classes for entities, validators and data formatters (for writing to a file). 
 CSVHandler can read csv files to list of given entities (Hotels in the example. models.hotels.Hotels).
-It is possible to register validators in current csv handler and set output format (without registering formatter for output it could not write to file).
+It is possible to register validators in current csv handler and set output format (without registering the formatter for output it could not write to file).
 
 In Solution there are two formatters: xml and json, but it is simple to add another.
 

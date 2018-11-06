@@ -7,6 +7,7 @@ class BaseFormatter:
     """
     ext = '.txt'
     separator = ''
+    name = ''
 
     @classmethod
     def start(cls, plural_name):
@@ -47,6 +48,7 @@ class BaseFormatter:
 class XMLFormatter(BaseFormatter):
     ext = '.xml'
     separator = ''
+    name = 'XML formatter'
 
     @classmethod
     def start(cls, plural_name):
@@ -70,6 +72,7 @@ class XMLFormatter(BaseFormatter):
 class JSONFormatter(BaseFormatter):
     ext = '.json'
     separator = ','
+    name = 'JSON formatter'
 
     @classmethod
     def start(cls, plural_name):

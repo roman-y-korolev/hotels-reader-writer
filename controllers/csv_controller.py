@@ -1,5 +1,6 @@
 import csv
 import logging
+
 from errors import ValidationError, CSVHandlerError
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ class CSVHandler:
         """
         if set(validator.fields) - set(self.entity.fields):
             raise CSVHandlerError('Entity does not have the required fields')
+        logger.info('Validator "{name}" is registered'.format(name=validator.name))
         self.validator_list.append(validator)
 
     def read(self):
@@ -60,6 +62,8 @@ class CSVHandler:
         """
         with open(self.file_path, newline='\n') as csvfile:
             reader = csv.reader(csvfile, delimiter=self.delimiter)
+
+            logger.info('Start read file "{file_path}"'.format(file_path=self.file_path))
 
             for n, row in enumerate(reader):
                 if n > 0:
@@ -85,6 +89,9 @@ class CSVHandler:
 
                     if valid:
                         self.result.append(self.entity(**row_dict))
+
+        logger.info('File "{file_path}" is read'.format(file_path=self.file_path))
+
         return self.result
 
     def register_formatter(self, formatter):
@@ -96,6 +103,8 @@ class CSVHandler:
         :rtype: None
         """
         self.formatter = formatter
+        logger.info('Formatter "{name}" is registered. Output format is "{ext}"'.format(name=formatter.name,
+                                                                                        ext=formatter.ext))
 
     def write(self):
         """
@@ -107,6 +116,7 @@ class CSVHandler:
             raise CSVHandlerError('The formatter must be specified')
 
         destination_path = self.file_path[:-4] + self.formatter.ext
+        logger.info('Start write to the file "{path}"'.format(path=destination_path))
         with open(destination_path, 'w+') as f:
             start = self.formatter.start(self.entity.name_plural)
             f.write(start)
@@ -116,6 +126,8 @@ class CSVHandler:
                     f.write(self.formatter.separator)
                 f.write('\n')
             f.write(self.formatter.end(self.entity.name_plural))
+
+        logger.info('File "{path}" is created'.format(path=destination_path))
         return destination_path
 
     def sort(self, field_name):
@@ -129,4 +141,5 @@ class CSVHandler:
         if field_name not in self.entity.fields:
             raise CSVHandlerError('Property "field_name" must be in list of entity fields')
         self.result = sorted(self.result, key=lambda k: getattr(k, field_name))
+        logger.info('Data is sorted')
         return self.result
